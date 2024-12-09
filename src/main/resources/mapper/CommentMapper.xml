@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.myblog.mapper.CommentMapper">
+
+    <select id="selectArticleVoListByArticleId" resultType="com.example.myblog.entity.vo.CommentVo">
+        SELECT c.id,
+               c.article_id,
+               c.user_id,
+               c.content,
+               c.create_time,
+               u.username,
+               u.photo
+        FROM comments c
+                 LEFT JOIN users u ON c.user_id = u.id
+        WHERE c.article_id = #{articleId}
+        ORDER BY c.create_time DESC
+    </select>
+    <select id="selectArticleVoList" resultType="com.example.myblog.entity.vo.CommentVo">
+        SELECT c.id,
+               c.article_id,
+               c.user_id,
+               c.content,
+               c.create_time,
+               u.username,
+               u.photo
+        FROM comments c
+                 LEFT JOIN users u ON c.user_id = u.id
+        ORDER BY c.create_time DESC
+    </select>
+</mapper>

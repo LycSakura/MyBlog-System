@@ -1,0 +1,40 @@
+server:
+  port: 9999
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/blog?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: root
+    password: Lyc031021@
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: Lyc031021@
+      database: 0           # 使用的 Redis 数据库编号
+      timeout: 5000ms
+      lettuce:
+        pool:
+          max-active: 8     # 最大活跃连接数
+          max-idle: 8       # 最大空闲连接数
+          min-idle: 0       # 最小空闲连接数
+          max-wait: 10s     # 连接池最大等待时间
+mybatis-plus:
+  global-config:
+    db-config:
+      id-type: auto  # 主键生成策略
+  configuration:
+    map-underscore-to-camel-case: true  # 启用驼峰命名转换
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  type-aliases-package: com.example.myblog.entity  # 指定实体类包路径
+  mapper-locations: classpath:/mapper/*.xml  # 如果有 XML 映射文件，指定位置
+
+logging:
+  level:
+    com.example.myblog.mapper: debug
+    com.baomidou.mybatisplus: debug
+
+jwt:
+  secret: Lyc031021@ # JWT 密钥
+  expiration: 86400000 # JWT 过期时间（毫秒）
