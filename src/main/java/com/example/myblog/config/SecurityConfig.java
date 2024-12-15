@@ -42,12 +42,10 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 // 配置请求授权规则
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        // 放行用户相关接口
-                        .requestMatchers("/user/**","/captcha/**","/oss/**").permitAll()
-                        // 放行文章、分类、标签、评论接口
-                        .requestMatchers("/articles/**", "/category/**", "/tags/**", "/comment/**").permitAll()
-                        // 其他请求需要认证
-                        .anyRequest().authenticated()
+                        // OSS接口需要认证
+                        .requestMatchers("/oss/**").authenticated()
+                        // 其他请求全部放行
+                        .anyRequest().permitAll()
                 )
                 // 添加JwtRequestFilter到过滤器链中
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)

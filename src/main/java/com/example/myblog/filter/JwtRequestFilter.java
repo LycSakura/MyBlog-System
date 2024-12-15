@@ -47,42 +47,27 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         try {
             final String authorizationHeader = request.getHeader("Authorization"); // 获取Authorization头
-            final String requestedPath = request.getHeader("X-Requested-Path"); // 获取请求路径
 
             String username = null;
             String jwt = null;
 
-            // 判断如果是 /dashboard 路径，才需要认证
-            if (requestedPath != null && requestedPath.startsWith("/dashboard")) {
-                if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-                    jwt = authorizationHeader.substring(7); // 提取JWT
-                    username = jwtUtil.extractUsername(jwt); // 从JWT中提取用户名
-                }
+            if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+                jwt = authorizationHeader.substring(7); // 提取JWT
+                username = jwtUtil.extractUsername(jwt); // 从JWT中提取用户名
+            }
 
-                if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    UserDetails userDetails = this.userDetailsService.loadUserByUsername(username); // 加载用户详情
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = this.userDetailsService.loadUserByUsername(username); // 加载用户详情
 
-                    if (jwtUtil.validateToken(jwt, userDetails.getUsername())) { // 验证JWT
-                        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                                userDetails, null, userDetails.getAuthorities()); // 创建认证令牌
-                        usernamePasswordAuthenticationToken
-                                .setDetails(new WebAuthenticationDetailsSource().buildDetails(request)); // 设置详细信息
-                        SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken); // 设置认证上下文
-                    }
+                if (jwtUtil.validateToken(jwt, userDetails.getUsername())) { // 验证JWT
+                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+                            userDetails, null, userDetails.getAuthorities()); // 创建认证令牌
+                    usernamePasswordAuthenticationToken
+                            .setDetails(new WebAuthenticationDetailsSource().buildDetails(request)); // 设置详细信息
+                    SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken); // 设置认证上下文
                 }
             }
 
-            // 对Token过期等异常进行处理
-            if (jwt == null || username == null || !jwtUtil.validateToken(jwt, username)) {
-                assert requestedPath != null;
-                if (requestedPath.startsWith("/dashboard")) {
-                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    response.setContentType("application/json");
-                    response.setCharacterEncoding("UTF-8");
-                    response.getWriter().write("{\"message\": \"请先登录后访问\"}");
-                    return;
-                }
-            }
 
             chain.doFilter(request, response); // 继续过滤器链
         } catch (ExpiredJwtException e) {
