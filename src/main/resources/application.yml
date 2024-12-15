@@ -1,15 +1,19 @@
 server:
   port: 9999
-
+  address: 0.0.0.0  # 监听所有可用的网络接口
+  servlet:
+    context-path: /api
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/blog?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+#    url: jdbc:mysql://localhost:3306/blog?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://8.138.96.129:3306/blog?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     username: root
     password: Lyc031021@
     driver-class-name: com.mysql.cj.jdbc.Driver
   data:
     redis:
-      host: localhost
+#      host: localhost
+      host: 8.138.96.129
       port: 6379
       password: Lyc031021@
       database: 0           # 使用的 Redis 数据库编号
